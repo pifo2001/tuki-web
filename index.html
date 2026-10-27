@@ -97,6 +97,10 @@ textarea{min-height:120px;resize:vertical;font-size:15px}
 .oculto{display:none!important}
 .toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom));transform:translate(-50%,30px);background:var(--card2);border:1px solid var(--linea);padding:10px 16px;border-radius:999px;font-size:14px;opacity:0;transition:.25s;pointer-events:none}
 .toast.ver{opacity:1;transform:translate(-50%,0)}
+.carga{display:flex;flex-direction:column;align-items:center;gap:10px;padding:8px 0 2px;animation:sube .3s both}
+.carga img{width:min(100%,360px);border-radius:18px;animation:latido 2.2s ease-in-out infinite;box-shadow:0 14px 40px -18px #ff5fb3aa}
+.carga p{margin:0;color:var(--tx2);font-size:14px;min-height:20px;text-align:center}
+@keyframes latido{0%,100%{transform:scale(1);filter:brightness(1)}50%{transform:scale(1.025);filter:brightness(1.15)}}
 .preview{display:none}
 .pie{text-align:center;color:var(--tx3);font-size:12.5px;margin-top:8px}
 </style>
@@ -237,6 +241,17 @@ async function llamar(cuerpo) {
 function aviso(msg) { const t = $("#toast"); t.textContent = msg; t.classList.add("ver"); clearTimeout(aviso.h); aviso.h = setTimeout(() => t.classList.remove("ver"), 1800); }
 const pausa = (ms) => new Promise((r) => setTimeout(r, ms));
 
+// La espera es de 6-8 s: que no sea un círculo girando, sino la marca latiendo
+// y la pandilla calentando motores.
+const FRASES = ["Leyendo el chat…", "Zen respira hondo…", "Pal busca la parte buena…", "Lillo afila la lengua…", "Tulelo ya tiene un plan absurdo…"];
+function cargando() {
+  const d = el("div", "carga");
+  const i = el("img"); i.src = "img/tuki-pensando.jpg"; i.alt = "Tuki está pensando";
+  const p = el("p", "", FRASES[0]); let n = 0;
+  const h = setInterval(() => { if (!d.isConnected) return clearInterval(h); n = (n + 1) % FRASES.length; p.textContent = FRASES[n]; }, 1700);
+  d.append(i, p); return d;
+}
+
 // ---------- el chat ----------
 function avatar(p, clase) {
   const m = MATES[p] || MATES.tuki;
@@ -334,7 +349,7 @@ $("#comentar").onclick = async () => {
   const t = $("#trozo").value.trim(); $("#errPrueba").textContent = "";
   if (!t) { $("#errPrueba").textContent = "Pega primero un trozo de chat."; return; }
   const b = $("#comentar"); b.disabled = true; b.textContent = "Pensando…";
-  const cont = $("#chat"); cont.replaceChildren(escribiendo("tuki"));
+  const cont = $("#chat"); cont.replaceChildren(cargando());
   try { const d = await llamar({ texto: t, formato: "json" }); await pintar(cont, d); }
   catch (e) { cont.replaceChildren(); $("#errPrueba").textContent = e.message; if (e.auth) salir(); }
   finally { b.disabled = false; b.textContent = "Que opinen 💬"; }
@@ -376,7 +391,7 @@ $("#cerrarVisor").onclick = () => { history.replaceState(null, "", location.path
   const compartido = [q.get("title"), q.get("text"), q.get("url")].filter(Boolean).join("\n").trim();
   if (token && (compartido || q.get("compartido") === "imagen")) {
     mostrar("visor"); $("#visorSub").textContent = "Leyendo lo que has compartido…";
-    const cont = $("#chatVisor"); cont.replaceChildren(escribiendo("tuki"));
+    const cont = $("#chatVisor"); cont.replaceChildren(cargando());
     try {
       let cuerpo;
       if (compartido) cuerpo = { texto: compartido, formato: "json" };
