@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 236 96" role="img" aria-label="Tuki">
+  <defs>
+    <linearGradient id="g" gradientUnits="userSpaceOnUse" x1="8" y1="0" x2="222" y2="0">
+      <stop offset="0" stop-color="#4fd1c5"/><stop offset=".45" stop-color="#9b8cff"/><stop offset="1" stop-color="#ff5fb3"/>
+    </linearGradient>
+    <filter id="brillo" x="-20%" y="-30%" width="140%" height="160%"><feGaussianBlur stdDeviation="4.5"/></filter>
+  </defs>
+  <!-- letras construidas con trazos: ángulos achaflanados y puntas redondas -->
+  <g id="letras" fill="none" stroke-width="11" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 24 H64 M38 24 V76"/>                                  <!-- T -->
+    <path d="M86 24 V62 L97 74 H119 L130 62 V24"/>                      <!-- U -->
+    <path d="M152 24 V76 M152 54 L186 24 M165 46 L189 76"/>             <!-- K -->
+    <path d="M214 42 V76"/>                                             <!-- i -->
+  </g>
+  <g filter="url(#brillo)" opacity=".75"><use href="#letras" stroke="url(#g)"/></g>
+  <use href="#letras" stroke="url(#g)"/>
+  <!-- el punto de la i es el ojo/antena del robot -->
+  <circle cx="214" cy="20" r="8" fill="#ff7ac8"/><circle cx="214" cy="20" r="3" fill="#fff"/>
+</svg>
