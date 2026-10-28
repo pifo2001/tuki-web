@@ -113,11 +113,11 @@ textarea{min-height:120px;resize:vertical;font-size:15px}
 <div id="entrada" class="login oculto">
   <h1><img class="marca" src="img/tuki-pensando.jpg" alt="Tuki"></h1>
   <img class="hero" id="hero" src="img/pandilla.jpg" alt="Zen, Pal, Lillo y Tulelo, los cuatro robots de Tuki">
-  <p>Tu pandilla en el hombro. Pega tu token para entrar.</p>
-  <input id="token" type="password" placeholder="Tu token de Tuki" autocomplete="off" spellcheck="false">
+  <p>Tu pandilla en el hombro. Pon tu código de invitación para entrar.</p>
+  <input id="token" type="text" placeholder="Código de invitación" autocomplete="off" autocapitalize="none" spellcheck="false">
   <div class="fila" style="justify-content:center"><button class="btn pri" id="entrar">Entrar</button></div>
   <div class="estado mal" id="errEntrada"></div>
-  <div class="ayuda-os">El token es solo tuyo y se queda en este dispositivo.</div>
+  <div class="ayuda-os">Al entrar se crea tu Tuki, que se queda solo en este dispositivo. ¿Ya tenías uno? Pega aquí su token largo.</div>
 </div>
 
 <!-- ============ PANEL ============ -->
@@ -383,14 +383,31 @@ $("#olvidar").onclick = async () => {
   try { await llamar({ accion: "olvidar" }); aviso("Hecho: no recuerda nada"); } catch (e) { aviso(e.message); }
 };
 
+// ---------- puente con la app nativa ----------
+// Dentro de la app (WebView) el token también se guarda en el llavero del sistema,
+// que sobrevive a que el sistema limpie los datos de la web.
+function puente(m) { try { window.ReactNativeWebView && window.ReactNativeWebView.postMessage(JSON.stringify(m)); } catch {} }
+
 // ---------- entrada / salida ----------
 function mostrar(id) { ["entrada", "panel", "visor"].forEach((x) => $("#" + x).classList.toggle("oculto", x !== id)); window.scrollTo(0, 0); }
 async function entrar() {
-  try { ajustes = { ...ajustes, ...(await llamar({ accion: "ajustes" })) }; pintarAjustes(); mostrar("panel"); }
+  try { ajustes = { ...ajustes, ...(await llamar({ accion: "ajustes" })) }; pintarAjustes(); mostrar("panel"); puente({ t: "token", v: token }); }
   catch (e) { guardado.poner(""); token = ""; mostrar("entrada"); $("#errEntrada").textContent = e.auth ? "Ese token no es válido." : e.message; }
 }
-function salir() { guardado.poner(""); token = ""; $("#token").value = ""; mostrar("entrada"); }
-$("#entrar").onclick = () => { const v = $("#token").value.trim(); if (!v) return; token = v; guardado.poner(v); $("#errEntrada").textContent = ""; entrar(); };
+function salir() { puente({ t: "salir" }); guardado.poner(""); token = ""; $("#token").value = ""; mostrar("entrada"); }
+// Un solo campo: un código corto crea tu Tuki; un token largo (48) lo recupera.
+$("#entrar").onclick = async () => {
+  const v = $("#token").value.trim(); if (!v) return; $("#errEntrada").textContent = "";
+  if (v.length >= 32) { token = v; guardado.poner(v); return entrar(); }
+  const b = $("#entrar"); b.disabled = true;
+  try {
+    const r = await fetch(API, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ accion: "alta", invitacion: v }) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok || !j.token) throw new Error(r.status === 403 ? "Ese código no es válido." : "No se ha podido crear tu Tuki. Prueba otra vez.");
+    token = j.token; guardado.poner(token); await entrar();
+  } catch (e) { $("#errEntrada").textContent = e.message; }
+  finally { b.disabled = false; }
+};
 $("#token").addEventListener("keydown", (e) => { if (e.key === "Enter") $("#entrar").click(); });
 $("#salir").onclick = salir;
 
@@ -405,6 +422,30 @@ async function abrirVisor(d, sub) {
   await pintar($("#chatVisor"), d);
 }
 $("#cerrarVisor").onclick = () => { history.replaceState(null, "", location.pathname); token ? entrar() : mostrar("entrada"); };
+
+// Una captura de iPhone en PNG puede pasar de 3 MB; el servidor admite 5 MB. Se
+// reduce aquí, en el dispositivo, antes de salir.
+async function comprimirImagen(b64, tipo) {
+  const img = new Image(); img.src = `data:${tipo || "image/png"};base64,${b64}`; await img.decode();
+  const k = Math.min(1, 1170 / img.naturalWidth);
+  const c = document.createElement("canvas"); c.width = Math.round(img.naturalWidth * k); c.height = Math.round(img.naturalHeight * k);
+  c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+  return { imagen: c.toDataURL("image/jpeg", 0.72).split(",")[1], tipo: "image/jpeg" };
+}
+async function comentarCompartido(cuerpo) {
+  mostrar("visor"); $("#visorSub").textContent = "Leyendo lo que has compartido…";
+  const cont = $("#chatVisor"); cont.replaceChildren(cargando());
+  try {
+    const d = await llamar({ ...cuerpo, formato: "json" });
+    $("#visorSub").textContent = "La pandilla opina"; await pintar(cont, d);
+  } catch (e) { cont.replaceChildren(el("div", "ayuda", e.message)); $("#visorSub").textContent = "Algo ha fallado"; if (e.auth) salir(); }
+}
+// La app nativa llama a esto cuando el usuario comparte una captura o un texto hacia Tuki.
+window.tukiRecibir = async (o) => {
+  if (!token) { aviso("Entra primero con tu código"); return; }
+  try { await comentarCompartido(o.imagen ? await comprimirImagen(o.imagen, o.tipo) : { texto: o.texto || "" }); }
+  catch (e) { aviso("No he podido leer eso"); }
+};
 
 (async function inicio() {
   aplicarSkin();
