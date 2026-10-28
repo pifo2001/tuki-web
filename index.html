@@ -110,7 +110,7 @@ textarea{min-height:120px;resize:vertical;font-size:15px}
 
 <!-- ============ ENTRADA ============ -->
 <div id="entrada" class="login oculto">
-  <img class="hero" src="img/pandilla.jpg" alt="Zen, Pal, Lillo y Tulelo, los cuatro robots de Tuki">
+  <img class="hero" id="hero" src="img/pandilla.jpg" alt="Zen, Pal, Lillo y Tulelo, los cuatro robots de Tuki">
   <h1><img class="logo grande" src="img/tuki-logo.png" alt="Tuki"></h1>
   <p>Tu pandilla en el hombro. Pega tu token para entrar.</p>
   <input id="token" type="password" placeholder="Tu token de Tuki" autocomplete="off" spellcheck="false">
@@ -126,6 +126,15 @@ textarea{min-height:120px;resize:vertical;font-size:15px}
     <div><h1><img class="logo" src="img/tuki-logo.png" alt="Tuki"></h1><p>Tu pandilla, a tu manera</p></div>
     <button class="salir" id="salir">Salir</button>
   </div>
+
+  <section>
+    <h2>Aspecto</h2>
+    <p class="sub">Los mismos cuatro, en versión clásica o avanzada.</p>
+    <div class="seg" id="skin">
+      <button data-s="clasico" aria-pressed="true">Clásico</button>
+      <button data-s="avanzado" aria-pressed="false">Avanzado ✨</button>
+    </div>
+  </section>
 
   <section>
     <h2>¿Quién te acompaña?</h2>
@@ -204,10 +213,10 @@ textarea{min-height:120px;resize:vertical;font-size:15px}
 // La URL de la función. Es pública: lo que protege es el token.
 const API = "https://ddxtoeswzcdtkaetfair.supabase.co/functions/v1/comentar";
 const MATES = {
-  zen:   { n: "Zen",   e: "🧘", img: "img/zen.png" },
-  pal:   { n: "Pal",   e: "🤝", img: "img/pal.png" },
-  crack: { n: "Lillo", e: "😎", img: "img/crack.png" },
-  loco:  { n: "Tulelo",  e: "🤪", img: "img/loco.png" },
+  zen:   { n: "Zen",   e: "🧘", img: "img/zen.png", av: "img/zen-av.png" },
+  pal:   { n: "Pal",   e: "🤝", img: "img/pal.png", av: "img/pal-av.png" },
+  crack: { n: "Lillo", e: "😎", img: "img/crack.png", av: "img/crack-av.png" },
+  loco:  { n: "Tulelo",  e: "🤪", img: "img/loco.png", av: "img/loco-av.png" },
   tuki:  { n: "Tuki",  e: "🤖" },
 };
 const EJEMPLO = {
@@ -222,6 +231,12 @@ const EJEMPLO = {
   respuesta: "Sin prisa. Si el sábado te va bien dímelo, y si no, ya habrá otra.",
 };
 
+// Aspecto de los robots: solo visual, así que vive en este dispositivo y no en el servidor.
+const skin = {
+  v: (() => { try { return localStorage.getItem("tuki_skin") === "avanzado" ? "avanzado" : "clasico"; } catch { return "clasico"; } })(),
+  poner(x) { this.v = x; try { localStorage.setItem("tuki_skin", x); } catch {} },
+};
+const imgDe = (p) => { const m = MATES[p]; return m && (skin.v === "avanzado" && m.av ? m.av : m.img); };
 const $ = (s) => document.querySelector(s);
 const el = (t, c, h) => { const n = document.createElement(t); if (c) n.className = c; if (h !== undefined) n.textContent = h; return n; };
 const guardado = {
@@ -256,7 +271,7 @@ function cargando() {
 function avatar(p, clase) {
   const m = MATES[p] || MATES.tuki;
   const d = el("div", clase || "av");
-  if (m.img) { const i = el("img"); i.src = m.img; i.alt = ""; d.append(i); } else d.textContent = m.e;
+  if (m.img) { const i = el("img"); i.src = imgDe(p); i.alt = ""; d.append(i); } else d.textContent = m.e;
   return d;
 }
 function hora(i) { const d = new Date(Date.now() + i * 1000); return d.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" }); }
@@ -290,7 +305,7 @@ async function pintar(cont, d, opciones = {}) {
   const voces = [...new Set(d.comentarios.map((c) => c.personaje))].filter((p) => MATES[p]);
   const cab = el("div", "cab");
   cab.append(el("span", "", "👥"), el("span", "", "La pandilla opina"));
-  const pt = el("span", "pt"); voces.forEach((p) => { const i = el("i"); const im = el("img"); im.src = MATES[p].img; im.alt = ""; i.append(im); pt.append(i); }); cab.append(pt);
+  const pt = el("span", "pt"); voces.forEach((p) => { const i = el("i"); const im = el("img"); im.src = imgDe(p); im.alt = ""; i.append(im); pt.append(i); }); cab.append(pt);
   cont.append(cab);
   for (let i = 0; i < d.comentarios.length; i++) {
     const c = d.comentarios[i];
@@ -312,6 +327,14 @@ async function pintar(cont, d, opciones = {}) {
     t.append(b); cont.append(t);
   }
 }
+
+// ---------- aspecto ----------
+function aplicarSkin() {
+  document.querySelectorAll("#skin button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.s === skin.v));
+  document.querySelectorAll(".mate").forEach((b) => { const i = b.querySelector("img"); if (i) i.src = imgDe(b.dataset.p); });
+  $("#hero").src = skin.v === "avanzado" ? "img/pandilla-avanzada.jpg" : "img/pandilla.jpg";
+}
+$("#skin").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; skin.poner(b.dataset.s); aplicarSkin(); aviso(skin.v === "avanzado" ? "Aspecto avanzado ✨" : "Aspecto clásico"); });
 
 // ---------- ajustes ----------
 function pintarAjustes() {
@@ -383,6 +406,7 @@ async function abrirVisor(d, sub) {
 $("#cerrarVisor").onclick = () => { history.replaceState(null, "", location.pathname); token ? entrar() : mostrar("entrada"); };
 
 (async function inicio() {
+  aplicarSkin();
   if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
   const frag = deFragmento();
   if (frag) { history.replaceState(null, "", location.pathname); return abrirVisor(frag); }
