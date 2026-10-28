@@ -90,8 +90,9 @@ textarea{min-height:120px;resize:vertical;font-size:15px}
 
 .login{text-align:center;padding-top:8vh}
 .login svg{width:96px;height:96px}
-.hero{width:100%;max-width:420px;border-radius:22px;display:block;margin:0 auto 6px;box-shadow:0 18px 50px -20px #9b8cff88}
-.login h1{margin:0}
+.hero{width:100%;max-width:420px;border-radius:22px;display:block;margin:14px auto 16px;box-shadow:0 18px 50px -20px #9b8cff88}
+.login h1{margin:0 0 14px}
+.marca{width:min(100%,360px);display:block;margin:0 auto;border-radius:20px;box-shadow:0 16px 46px -18px #ff5fb3aa,0 0 0 1px #ffffff12}
 .login p{color:var(--tx2);margin:0 auto 22px;max-width:30ch}
 .ayuda-os{margin-top:14px;font-size:13px;color:var(--tx3)}
 .oculto{display:none!important}
@@ -110,8 +111,8 @@ textarea{min-height:120px;resize:vertical;font-size:15px}
 
 <!-- ============ ENTRADA ============ -->
 <div id="entrada" class="login oculto">
+  <h1><img class="marca" src="img/tuki-pensando.jpg" alt="Tuki"></h1>
   <img class="hero" id="hero" src="img/pandilla.jpg" alt="Zen, Pal, Lillo y Tulelo, los cuatro robots de Tuki">
-  <h1><img class="logo grande" src="img/tuki-logo.png" alt="Tuki"></h1>
   <p>Tu pandilla en el hombro. Pega tu token para entrar.</p>
   <input id="token" type="password" placeholder="Tu token de Tuki" autocomplete="off" spellcheck="false">
   <div class="fila" style="justify-content:center"><button class="btn pri" id="entrar">Entrar</button></div>
