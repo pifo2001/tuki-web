@@ -1,7 +1,7 @@
 {
   "name": "Tuki",
   "short_name": "Tuki",
-  "description": "Tu pandilla en el hombro: comenta tus chats con gracia y con verdad.",
+  "description": "Tu pandilla contigo: comenta tus chats con gracia y con verdad.",
   "lang": "es",
   "start_url": "./",
   "scope": "./",
