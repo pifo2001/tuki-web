@@ -63,26 +63,29 @@ textarea{min-height:120px;resize:vertical;font-size:15px}
 .estado.mal{color:var(--mal)}
 
 /* ---- el chat ---- */
-.chat{display:flex;flex-direction:column;gap:12px;margin-top:16px}
+.chat{display:flex;flex-direction:column;gap:5px;margin-top:14px}
 .chat:empty{display:none}
-.cab{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card2);border-radius:14px;font-size:14px;color:var(--tx2)}
+.cab{display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--card2);border-radius:12px;font-size:12.5px;color:var(--tx2);margin-bottom:4px}
 .cab b{color:var(--tx)}
 .cab .pt{margin-left:auto;display:flex}
-.cab .pt i{font-style:normal;width:28px;height:28px;border-radius:50%;overflow:hidden;display:grid;place-items:center;font-size:13px;background:var(--bg);border:2px solid var(--card2);margin-left:-8px}
+.cab .pt i{font-style:normal;width:24px;height:24px;border-radius:50%;overflow:hidden;display:grid;place-items:center;font-size:13px;background:var(--bg);border:2px solid var(--card2);margin-left:-8px}
 .cab .pt i img{width:100%;height:100%;object-fit:cover}
-.fila-msg{--c:var(--tuki);display:flex;gap:8px;align-items:flex-end;animation:sube .28s ease-out both}
-.fila-msg .av{flex:none;width:38px;height:38px;border-radius:50%;overflow:hidden;display:grid;place-items:center;font-size:18px;background:color-mix(in srgb,var(--c) 26%,#14102b);border:2px solid var(--c)}
-.burbuja{max-width:82%;background:color-mix(in srgb,var(--c) 16%,var(--card2));border:1px solid color-mix(in srgb,var(--c) 45%,transparent);border-radius:18px 18px 18px 6px;padding:9px 13px 8px;position:relative}
-.burbuja .nom{font-size:12.5px;font-weight:800;color:var(--c);letter-spacing:.2px;margin-bottom:2px}
-.burbuja .txt{font-size:15.5px;white-space:pre-wrap;word-break:break-word}
-.burbuja .meta{font-size:11px;color:var(--tx3);text-align:right;margin-top:3px}
+.fila-msg{--c:var(--tuki);display:flex;gap:7px;align-items:flex-end;animation:sube .22s ease-out both}
+.fila-msg .av{flex:none;width:30px;height:30px;border-radius:50%;overflow:hidden;display:grid;place-items:center;font-size:15px;background:color-mix(in srgb,var(--c) 26%,#14102b);border:2px solid var(--c)}
+.fila-msg.seguido .av{visibility:hidden}
+.burbuja{max-width:88%;background:color-mix(in srgb,var(--c) 16%,var(--card2));border:1px solid color-mix(in srgb,var(--c) 40%,transparent);border-radius:15px 15px 15px 4px;padding:6px 10px 7px;position:relative}
+.fila-msg.seguido .burbuja{border-radius:15px}
+.burbuja .cab-b{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.burbuja .nom{font-size:11.5px;font-weight:800;color:var(--c);letter-spacing:.2px}
+.burbuja .txt{font-size:14.5px;line-height:1.35;white-space:pre-wrap;word-break:break-word}
+.burbuja .meta{font-size:10px;color:var(--tx3)}
 .zen{--c:var(--zen)}.pal{--c:var(--pal)}.crack{--c:var(--crack)}.loco{--c:var(--loco)}.tuki{--c:var(--tuki)}
 .loco .txt{font-weight:600}
 .escribiendo{--c:var(--tuki);display:flex;gap:8px;align-items:flex-end;animation:sube .2s both}
-.escribiendo .pts{background:var(--card2);border-radius:18px 18px 18px 6px;padding:13px 16px;display:flex;gap:5px}
+.escribiendo .pts{background:var(--card2);border-radius:15px 15px 15px 4px;padding:10px 13px;display:flex;gap:4px}
 .escribiendo .pts i{width:7px;height:7px;border-radius:50%;background:var(--tx2);animation:bota 1s infinite}
 .escribiendo .pts i:nth-child(2){animation-delay:.15s}.escribiendo .pts i:nth-child(3){animation-delay:.3s}
-.tuya{align-self:flex-end;max-width:86%;background:linear-gradient(135deg,#6d5cff,#c04bd4);color:#fff;border-radius:18px 18px 6px 18px;padding:10px 14px;animation:sube .28s both}
+.tuya{align-self:flex-end;max-width:88%;background:linear-gradient(135deg,#6d5cff,#c04bd4);color:#fff;border-radius:15px 15px 4px 15px;padding:7px 12px 8px;font-size:14.5px;line-height:1.35;animation:sube .22s both;margin-top:4px}
 .tuya small{display:block;font-size:11px;opacity:.75;margin-bottom:2px;letter-spacing:.3px;text-transform:uppercase}
 .tuya button{margin-top:8px;background:#ffffff22;border:0;color:#fff;border-radius:10px;padding:6px 10px;font-size:13px;cursor:pointer}
 .ayuda{background:#3a1f2e;border:1px solid #7a3552;border-radius:14px;padding:16px;font-size:15px;animation:sube .28s both}
@@ -109,6 +112,9 @@ textarea{min-height:120px;resize:vertical;font-size:15px}
 .carga img{width:min(100%,340px);animation:latido 2.2s ease-in-out infinite;filter:drop-shadow(0 10px 28px #ff5fb355)}
 .carga p{margin:0;color:var(--tx2);font-size:14px;min-height:20px;text-align:center}
 @keyframes latido{0%,100%{transform:scale(1);opacity:.92}50%{transform:scale(1.035);opacity:1}}
+.enlaces{display:flex;flex-direction:column;gap:8px}
+.enlaces a{display:block;padding:12px 14px;border:1px solid var(--linea);border-radius:12px;color:var(--tx);text-decoration:none;background:var(--card2);font-size:15px}
+.enlaces a small{display:block;color:var(--tx3);font-size:12.5px;margin-top:1px}
 .preview{display:none}
 .pie{text-align:center;color:var(--tx3);font-size:12.5px;margin-top:8px}
 </style>
@@ -193,7 +199,24 @@ textarea{min-height:120px;resize:vertical;font-size:15px}
     <div class="fila"><button class="btn peligro" id="olvidar">Olvidar todo lo que sabe de mí</button></div>
   </section>
 
-  <div class="pie">Tuki · prueba privada</div>
+  <section>
+    <h2>Sobre Tuki</h2>
+    <p class="sub">Tuki es un proyecto de <b>VisionClub Team</b>: apps pequeñas con mucho carácter. Ahora mismo estamos en pruebas privadas.</p>
+    <div class="enlaces">
+      <a href="privacidad.html">Política de privacidad<small>Qué datos usamos y cómo los protegemos</small></a>
+      <a href="terminos.html">Condiciones de uso<small>Las reglas del juego, sin letra pequeña</small></a>
+      <a href="mailto:info@getvisionclub.com?subject=%5BTuki%5D%20">Contacto<small>info@getvisionclub.com</small></a>
+      <a href="mailto:info@getvisionclub.com?subject=%5BTuki%5D%20Algo%20no%20funciona">Avisar de un problema<small>Dinos qué ha pasado y lo arreglamos</small></a>
+    </div>
+  </section>
+
+  <section>
+    <h2>Si necesitas ayuda ahora</h2>
+    <p class="sub">Tuki es diversión, pero si algo te pesa, hay personas que escuchan. Gratis y las 24 horas.</p>
+    <div id="ayudaFija"></div>
+  </section>
+
+  <div class="pie">Tuki · VisionClub Team · versión de prueba</div>
 </div>
 
 <!-- ============ RESULTADO DEL ATAJO / COMPARTIR ============ -->
@@ -290,6 +313,17 @@ function bloqueAyuda(texto) {
   return caja;
 }
 
+// Lo que ve cualquiera en «Si necesitas ayuda ahora». DEBE ser idéntico a
+// bloqueAyuda("generico") de supabase/functions/_shared/ayuda.ts, que es la fuente de verdad
+// de los teléfonos; test/nucleo.test.ts lo comprueba.
+const AYUDA_FIJA = `📞 024 · Línea de atención a la conducta suicida. Gratis, confidencial y 24 horas.
+📞 717 003 717 · Teléfono de la Esperanza. Alguien te escucha, 24 horas.
+📞 900 20 20 10 · ANAR. Ayuda a niños y adolescentes, gratis, 24 horas. También para acoso escolar y ciberacoso.
+🚨 112 · Emergencias, si hay peligro ahora mismo.
+
+Si estás fuera de España, busca el teléfono de emergencias de tu país (en la Unión Europea, el 112).`;
+$("#ayudaFija").append(bloqueAyuda(AYUDA_FIJA));
+
 // ---------- el chat ----------
 function avatar(p, clase) {
   const m = MATES[p] || MATES.tuki;
@@ -298,12 +332,17 @@ function avatar(p, clase) {
   return d;
 }
 function hora(i) { const d = new Date(Date.now() + i * 1000); return d.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" }); }
-function burbuja(c, i) {
+function burbuja(c, i, seguido) {
   const m = MATES[c.personaje] || MATES.tuki;
-  const f = el("div", "fila-msg " + (MATES[c.personaje] ? c.personaje : "tuki"));
+  // Misma voz dos veces seguidas: sin repetir avatar ni nombre, como en un chat de verdad.
+  const f = el("div", "fila-msg " + (MATES[c.personaje] ? c.personaje : "tuki") + (seguido ? " seguido" : ""));
   f.append(avatar(c.personaje));
   const b = el("div", "burbuja");
-  b.append(el("div", "nom", m.n), el("div", "txt", c.texto), el("div", "meta", hora(i)));
+  if (seguido) b.append(el("div", "txt", c.texto));
+  else {
+    const cab = el("div", "cab-b"); cab.append(el("span", "nom", m.n), el("span", "meta", hora(i)));
+    b.append(cab, el("div", "txt", c.texto));
+  }
   f.append(b);
   return f;
 }
@@ -341,7 +380,7 @@ async function pintar(cont, d, opciones = {}) {
       if (mio !== token_anim) return;
       e.remove();
     }
-    cont.append(burbuja(c, i));
+    cont.append(burbuja(c, i, i > 0 && d.comentarios[i - 1].personaje === c.personaje));
     if (!rapido) await pausa(220);
     if (mio !== token_anim) return;
   }
