@@ -210,12 +210,6 @@ textarea{min-height:120px;resize:vertical;font-size:15px}
     </div>
   </section>
 
-  <section>
-    <h2>Si necesitas ayuda ahora</h2>
-    <p class="sub">Tuki es diversión, pero si algo te pesa, hay personas que escuchan. Gratis y las 24 horas.</p>
-    <div id="ayudaFija"></div>
-  </section>
-
   <div class="pie">Tuki · VisionClub Team · versión de prueba</div>
 </div>
 
@@ -312,17 +306,6 @@ function bloqueAyuda(texto) {
   }
   return caja;
 }
-
-// Lo que ve cualquiera en «Si necesitas ayuda ahora». DEBE ser idéntico a
-// bloqueAyuda("generico") de supabase/functions/_shared/ayuda.ts, que es la fuente de verdad
-// de los teléfonos; test/nucleo.test.ts lo comprueba.
-const AYUDA_FIJA = `📞 024 · Línea de atención a la conducta suicida. Gratis, confidencial y 24 horas.
-📞 717 003 717 · Teléfono de la Esperanza. Alguien te escucha, 24 horas.
-📞 900 20 20 10 · ANAR. Ayuda a niños y adolescentes, gratis, 24 horas. También para acoso escolar y ciberacoso.
-🚨 112 · Emergencias, si hay peligro ahora mismo.
-
-Si estás fuera de España, busca el teléfono de emergencias de tu país (en la Unión Europea, el 112).`;
-$("#ayudaFija").append(bloqueAyuda(AYUDA_FIJA));
 
 // ---------- el chat ----------
 function avatar(p, clase) {
